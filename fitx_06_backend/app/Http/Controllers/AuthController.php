@@ -26,6 +26,7 @@ class AuthController extends Controller
             'role' => 'hocvien'
         ]);
 
+
         return response()->json([
             'success' => true,
             'message' => 'Đăng ký thành công',
