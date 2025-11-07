@@ -12,17 +12,18 @@ return new class extends Migration
      * @return void
      */
     public function up(): void
-    {
-        Schema::create('workout_sets', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('workout_id')->constrained('workouts')->onDelete('cascade');
-            $table->string('exercise_name', 100);
-            $table->integer('sets');
-            $table->integer('reps');
-            $table->float('weight')->nullable();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('workout_sets', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('schedule_id')->constrained('workout_schedules')->onDelete('cascade');
+        $table->string('exercise_name', 100);
+        $table->integer('sets');
+        $table->integer('reps');
+        $table->float('weight')->nullable();
+        $table->timestamps();
+    });
+}
+
 
 
     /**

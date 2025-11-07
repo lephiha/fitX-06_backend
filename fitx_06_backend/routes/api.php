@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\UserProfileController;
+use App\HTTP\Controller\WorkoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,12 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/profile', [UserProfileController::class, 'show']);
     Route::put('/user/profile', [UserProfileController::class, 'update']);
+});
+
+//workout schedule
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/workouts', [WorkoutController::class, 'index']);
+    Route::get('/workouts/{id}', [WorkoutController::class, 'show']);
+    Route::post('/workouts/checkin', [WorkoutController::class, 'checkIn']);
+    Route::post('/workouts', [WorkoutController::class, 'store']);
 });
