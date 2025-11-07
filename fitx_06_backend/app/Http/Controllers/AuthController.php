@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\HasApiTokens;
+
 
 class AuthController extends Controller
 {
@@ -36,22 +38,29 @@ class AuthController extends Controller
 
     // Đăng nhập
     public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+{
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
 
-        $user = User::where('email', $request->email)->first();
+    $user = User::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['success' => false, 'message' => 'Email hoặc mật khẩu không đúng'], 401);
-        }
-
+    if (!$user || !Hash::check($request->password, $user->password)) {
         return response()->json([
-            'success' => true,
-            'message' => 'Đăng nhập thành công',
-            'user' => $user
-        ]);
+            'success' => false,
+            'message' => 'Email hoặc mật khẩu không chính xác'
+        ], 401);
     }
+
+    // Tạo Bearer Token 
+    $token = $user->createToken('fitx_app_token')->plainTextToken;
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Đăng nhập thành công',
+        'token' => $token,
+        'user' => $user
+    ]);
+}
 }

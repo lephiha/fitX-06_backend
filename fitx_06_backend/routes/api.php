@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\UserProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,8 @@ Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetCode
 Route::post('/verify-reset-code', [ForgotPasswordController::class, 'verifyResetCode']);
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword']);
 
+//profile
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user/profile', [UserProfileController::class, 'show']);
+    Route::put('/user/profile', [UserProfileController::class, 'update']);
+});

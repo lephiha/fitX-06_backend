@@ -9,19 +9,29 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
-{
-    use HasApiTokens, Notifiable;
+    {
+        use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable = [
-        'fullname',
-        'email',
-        'phone',
-        'password',
-        'role'
-    ];
+        protected $fillable = [
+            'fullname',
+            'email',
+            'phone',
+            'password',
+            'role',
+            'avatar',
+            'weight',
+            'goal',
+            'package_id',
+        ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-}
+        protected $hidden = [
+            'password',
+            'remember_token',
+        ];
+
+        
+        public function package()
+        {
+            return $this->belongsTo(Package::class);
+        }
+    }
