@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('nutrition_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->date('date');
-            $table->enum('meal_type', ['Sáng', 'Trưa', 'Tối', 'Phụ']);
+            $table->enum('meal_type', ['breakfast', 'lunch', 'dinner', 'snack']); 
+            $table->string('food_name', 100);
             $table->integer('calories')->default(0);
             $table->float('protein')->default(0);
             $table->float('carbs')->default(0);
             $table->float('fat')->default(0);
-            $table->text('note')->nullable();
+            $table->date('date')->default(now());
             $table->timestamps();
         });
     }

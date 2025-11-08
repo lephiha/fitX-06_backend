@@ -3,61 +3,64 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\NutritionLog;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
-class UserProfileController extends Controller
+class NutritionController extends Controller
 {
-    
-    public function show()
+    // Lấy log dinh dưỡng hôm nay
+    public function today()
     {
-        $user = Auth::user();
+        $userId = Auth::id();
+        $today = Carbon::today();
+
+        $logs = NutritionLog::where('user_id', $userId)
+            ->whereDate('date', $today)
+            ->get();
+
+        $summary = [
+            'total_calories' => $logs->sum('calories'),
+            'protein' => $logs->sum('protein'),
+            'carbs' => $logs->sum('carbs'),
+            'fat' => $logs->sum('fat'),
+        ];
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'fullname' => $user->fullname,
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'avatar' => $user->avatar,
-                'weight' => $user->weight,
-                'goal' => $user->goal,
-                'role' => $user->role,
-                'package_id' => $user->package_id,
-            ]
+            'date' => $today->toDateString(),
+            'summary' => $summary,
+            'meals' => $logs
         ]);
     }
 
-    
-    public function update(Request $request)
+    // Ghi log bữa ăn
+    public function addMeal(Request $request)
     {
-        $user = Auth::user();
-
         $request->validate([
-            'fullname' => 'nullable|string|max:100',
-            'phone' => 'nullable|string|max:20',
-            'weight' => 'nullable|numeric',
-            'goal' => 'nullable|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'meal_type' => 'required|in:breakfast,lunch,dinner,snack',
+            'food_name' => 'required|string|max:100',
+            'calories' => 'required|integer|min:0',
+            'protein' => 'nullable|numeric|min:0',
+            'carbs' => 'nullable|numeric|min:0',
+            'fat' => 'nullable|numeric|min:0',
         ]);
 
-        
-        if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $path;
-        }
-
-        $user->fullname = $request->fullname ?? $user->fullname;
-        $user->phone = $request->phone ?? $user->phone;
-        $user->weight = $request->weight ?? $user->weight;
-        $user->goal = $request->goal ?? $user->goal;
-
-        $user->save();
+        $log = NutritionLog::create([
+            'user_id' => Auth::id(),
+            'meal_type' => $request->meal_type,
+            'food_name' => $request->food_name,
+            'calories' => $request->calories,
+            'protein' => $request->protein ?? 0,
+            'carbs' => $request->carbs ?? 0,
+            'fat' => $request->fat ?? 0,
+            'date' => now(),
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Cập nhật hồ sơ thành công',
-            'data' => $user
+            'message' => 'Đã thêm bữa ăn thành công',
+            'meal' => $log
         ]);
     }
 }

@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\UserProfileController;
 use App\HTTP\Controller\WorkoutController;
+use App\Http\Controllers\NutritionController;
+use App\Http\Controllers\CheckinController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,4 +41,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/workouts/{id}', [WorkoutController::class, 'show']);
     Route::post('/workouts/checkin', [WorkoutController::class, 'checkIn']);
     Route::post('/workouts', [WorkoutController::class, 'store']);
+});
+
+//nutrition 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/nutrition/today', [NutritionController::class, 'today']);
+    Route::post('/nutrition/add', [NutritionController::class, 'addMeal']);
+});
+
+//checkin 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/checkin', [CheckinController::class, 'checkin']);
 });
