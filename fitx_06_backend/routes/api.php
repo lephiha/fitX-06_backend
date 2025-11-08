@@ -8,6 +8,7 @@ use App\Http\Controllers\UserProfileController;
 use App\HTTP\Controller\WorkoutController;
 use App\Http\Controllers\NutritionController;
 use App\Http\Controllers\CheckinController;
+use App\Http\Controllers\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,4 +53,11 @@ Route::middleware('auth:sanctum')->group(function () {
 //checkin 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/checkin', [CheckinController::class, 'checkin']);
+});
+
+//chat PT
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/chat/send', [ChatController::class, 'sendMessage']);
+    Route::get('/chat/{receiver_id}', [ChatController::class, 'getMessages']);
+    Route::put('/chat/read/{sender_id}', [ChatController::class, 'markAsRead']);
 });
